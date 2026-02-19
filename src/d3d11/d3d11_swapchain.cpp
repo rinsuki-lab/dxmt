@@ -69,7 +69,7 @@ template <bool EnableMetalFX>
 class MTLD3D11SwapChain final : public MTLDXGISubObject<IDXGISwapChain4, MTLD3D11Device> {
 public:
   MTLD3D11SwapChain(
-      IDXGIFactory1 *pFactory, MTLD3D11Device *pDevice, IMTLDXGIDevice *pDXGIDevice,
+      IDXGIFactory1 *pFactory, MTLD3D11Device *pDevice, IMTLDXGIDevice1 *pDXGIDevice,
        HWND hWnd, const DXGI_SWAP_CHAIN_DESC1 *pDesc,
       const DXGI_SWAP_CHAIN_FULLSCREEN_DESC *pFullscreenDesc
   ) :
@@ -865,7 +865,7 @@ private:
   };
 
   Com<IDXGIFactory1> factory_;
-  Com<IMTLDXGIDevice> dxgi_device_;
+  Com<IMTLDXGIDevice1> dxgi_device_;
   WMT::Object native_view_;
   WMT::MetalLayer layer_weak_;
   ULONG presentation_count_;
@@ -910,9 +910,9 @@ CreateSwapChain(
     return E_FAIL;
   }
 
-  Com<IMTLDXGIDevice> layer_factory;
+  Com<IMTLDXGIDevice1> layer_factory;
   if (FAILED(pDevice->QueryInterface(IID_PPV_ARGS(&layer_factory)))) {
-    ERR("CreateSwapChain: failed to get IMTLDXGIDevice");
+    ERR("CreateSwapChain: failed to get IMTLDXGIDevice1");
     return E_FAIL;
   }
   if ((pDesc->SwapEffect != DXGI_SWAP_EFFECT_DISCARD &&

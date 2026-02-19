@@ -106,7 +106,7 @@ public:
     if (!ppSwapChain || !pDesc || !hWnd || !pDevice)
       return DXGI_ERROR_INVALID_CALL;
 
-    Com<IMTLDXGIDevice> metal_dxgi_device;
+    Com<IMTLDXGIDevice1> metal_dxgi_device;
     if (FAILED(pDevice->QueryInterface(IID_PPV_ARGS(&metal_dxgi_device)))) {
       ERR("Unsupported device type");
       return DXGI_ERROR_UNSUPPORTED;

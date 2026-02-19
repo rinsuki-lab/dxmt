@@ -292,6 +292,10 @@ public:
   }
 
   void Retain(uint64_t seq, Allocation *allocation);
+
+  WMT::CommandQueue GetMTLCommandQueue() {
+    return commandQueue;
+  }
 };
 
 } // namespace dxmt

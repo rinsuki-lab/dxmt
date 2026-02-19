@@ -44,7 +44,7 @@ const GUID kGpaUUID = {0xccffef16,
 class MTLD3D11DeviceImpl final : public MTLD3D11Device, public IMTLD3D11DeviceExt {
 friend class MTLD3D11DXGIDevice;
 public:
-  MTLD3D11DeviceImpl(MTLDXGIObject<IMTLDXGIDevice> *container,
+  MTLD3D11DeviceImpl(MTLDXGIObject<IMTLDXGIDevice1> *container,
                  IMTLDXGIAdapter *pAdapter, D3D_FEATURE_LEVEL FeatureLevel,
                  UINT FeatureFlags, Device &device)
       : m_container(container), adapter_(pAdapter),
@@ -1078,7 +1078,7 @@ public:
   };
 
 private:
-  MTLDXGIObject<IMTLDXGIDevice> *m_container;
+  MTLDXGIObject<IMTLDXGIDevice1> *m_container;
   IMTLDXGIAdapter *adapter_;
   D3D_FEATURE_LEVEL m_FeatureLevel;
   UINT m_FeatureFlags;
@@ -1109,7 +1109,7 @@ private:
  * Stores all the objects that contribute to the D3D11
  * device implementation, including the DXGI device.
  */
-class MTLD3D11DXGIDevice final : public MTLDXGIObject<IMTLDXGIDevice> {
+class MTLD3D11DXGIDevice final : public MTLDXGIObject<IMTLDXGIDevice1> {
 public:
   friend class MTLDXGIMetalLayerFactory;
 
@@ -1148,7 +1148,7 @@ public:
     if (riid == __uuidof(IUnknown) || riid == __uuidof(IDXGIObject) ||
         riid == __uuidof(IDXGIDevice) || riid == __uuidof(IDXGIDevice1) ||
         riid == __uuidof(IDXGIDevice2) || riid == __uuidof(IDXGIDevice3) ||
-        riid == __uuidof(IMTLDXGIDevice)) {
+        riid == __uuidof(IMTLDXGIDevice) || riid == __uuidof(IMTLDXGIDevice1)) {
       *ppvObject = ref(this);
       return S_OK;
     }
@@ -1181,7 +1181,7 @@ public:
     if (riid == kRenderdocUUID || riid == kPixUUID || riid == kGpaUUID)
       return E_NOINTERFACE;
 
-    if (logQueryInterfaceError(__uuidof(IMTLDXGIDevice), riid)) {
+    if (logQueryInterfaceError(__uuidof(IMTLDXGIDevice1), riid)) {
       WARN("D3D11Device: Unknown interface query ", str::format(riid));
     }
 
@@ -1270,6 +1270,10 @@ public:
 
   D3DKMT_HANDLE STDMETHODCALLTYPE GetLocalD3DKMT() final { return local_kmt_; }
 
+  WMT::CommandQueue STDMETHODCALLTYPE GetMTLCommandQueue() override {
+    return cmd_queue_.GetMTLCommandQueue();
+  }
+
 private:
   Com<IMTLDXGIAdapter> adapter_;
   D3DKMT_HANDLE local_kmt_ = 0;
@@ -1278,11 +1282,11 @@ private:
   MTLD3D11DeviceImpl d3d11_device_;
 };
 
-Com<IMTLDXGIDevice> CreateD3D11Device(std::unique_ptr<Device> &&device,
+Com<IMTLDXGIDevice1> CreateD3D11Device(std::unique_ptr<Device> &&device,
                                       IMTLDXGIAdapter *adapter,
                                       D3D_FEATURE_LEVEL feature_level,
                                       UINT feature_flags) {
-  return Com<IMTLDXGIDevice>::transfer(new MTLD3D11DXGIDevice(
+  return Com<IMTLDXGIDevice1>::transfer(new MTLD3D11DXGIDevice(
       std::move(device), adapter, feature_level, feature_flags));
 };
 } // namespace dxmt

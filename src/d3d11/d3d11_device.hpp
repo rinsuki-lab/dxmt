@@ -65,7 +65,7 @@ public:
   d3d11_device_mutex mutex;
 };
 
-Com<IMTLDXGIDevice> CreateD3D11Device(std::unique_ptr<Device> &&device,
+Com<IMTLDXGIDevice1> CreateD3D11Device(std::unique_ptr<Device> &&device,
                                       IMTLDXGIAdapter *pAdapter,
                                       D3D_FEATURE_LEVEL FeatureLevel,
                                       UINT Flags);
