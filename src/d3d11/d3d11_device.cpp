@@ -1274,6 +1274,11 @@ public:
     return cmd_queue_.GetMTLCommandQueue();
   }
 
+  ID3D11Texture2D* STDMETHODCALLTYPE ImportMTLTexture(WMT::Texture texture) override {
+    // TODO
+    return nullptr;
+  }
+
 private:
   Com<IMTLDXGIAdapter> adapter_;
   D3DKMT_HANDLE local_kmt_ = 0;

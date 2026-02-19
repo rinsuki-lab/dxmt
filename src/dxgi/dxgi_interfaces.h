@@ -1,6 +1,7 @@
 #pragma once
 
 #include <dxgi1_6.h>
+#include <d3d11.h>
 #include "util_d3dkmt.h"
 #include "Metal.hpp"
 #include "com/com_guid.hpp"
@@ -24,6 +25,7 @@ DEFINE_COM_INTERFACE("6bfa1657-9cb1-471a-a4fb-7cacf8a81207", IMTLDXGIDevice)
 DEFINE_COM_INTERFACE("7d2f767d-2b47-4f04-867c-60dfc9ae28c3", IMTLDXGIDevice1)
     : public IMTLDXGIDevice {
   virtual WMT::CommandQueue STDMETHODCALLTYPE GetMTLCommandQueue() = 0;
+  virtual ID3D11Texture2D* STDMETHODCALLTYPE ImportMTLTexture(WMT::Texture texture) = 0;
 };
 
 static constexpr IID DXMT_NVEXT_GUID = dxmt::guid::make_guid("ba0af616-4a43-4259-815c-db3b89829905");
