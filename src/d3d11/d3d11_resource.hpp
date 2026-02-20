@@ -490,6 +490,8 @@ HRESULT CreateDeviceTexture3D(MTLD3D11Device *pDevice,
                               const D3D11_SUBRESOURCE_DATA *pInitialData,
                               ID3D11Texture3D1 **ppTexture);
 
+HRESULT ImportMTLTexture2D(MTLD3D11Device *pDevice, WMT::Texture texture, ID3D11Texture2D **ppTexture);
+
 HRESULT ImportSharedTexture(MTLD3D11Device *pDevice, HANDLE hResource, REFIID riid, void **ppTexture);
 
 HRESULT ImportSharedTextureFromNtHandle(MTLD3D11Device *pDevice, HANDLE hResource, REFIID riid, void **ppTexture);

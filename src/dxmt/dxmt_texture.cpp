@@ -213,6 +213,21 @@ Texture::import(mach_port_t mach_port) {
   return nullptr;
 }
 
+Rc<TextureAllocation>
+Texture::import(WMT::Texture texture) {
+  WMTTextureInfo info;
+  MTLTexture_getInfo(texture, &info);
+  Flags<TextureAllocationFlag> flags;
+  if (info.options & WMTResourceStorageModeManaged)
+    flags.set(TextureAllocationFlag::GpuManaged);
+  if (info.options & WMTResourceStorageModePrivate)
+    flags.set(TextureAllocationFlag::GpuPrivate);
+  if (info.options & WMTResourceHazardTrackingModeUntracked)
+    flags.set(TextureAllocationFlag::NoTracking);
+  flags.set(TextureAllocationFlag::Shared);
+  return new TextureAllocation(this, std::move(texture), info, flags);
+}
+
 TextureView &
 Texture::view(TextureViewKey key) {
   return view(key, current_.ptr());

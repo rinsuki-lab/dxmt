@@ -1848,4 +1848,6 @@ WINEMETAL_API uint64_t MTLDevice_registryID(obj_handle_t device);
 
 WINEMETAL_API bool MTLSharedEvent_waitUntilSignaledValue(obj_handle_t event, uint64_t value, uint64_t timeout);
 
+WINEMETAL_API void MTLTexture_getInfo(obj_handle_t texture, struct WMTTextureInfo *info);
+
 #endif

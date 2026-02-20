@@ -502,6 +502,51 @@ CreateDeviceTexture3D(MTLD3D11Device *pDevice,
                                                      pInitialData, ppTexture);
 }
 
+HRESULT
+ImportMTLTexture2D(MTLD3D11Device *pDevice, WMT::Texture texture, ID3D11Texture2D **ppTexture) {
+  struct WMTTextureInfo mtlInfo;
+  MTLTexture_getInfo(texture, &mtlInfo);
+  
+  auto mtex = Rc<Texture>(new Texture(mtlInfo, pDevice->GetMTLDevice()));
+  auto allocation = mtex->import(texture);
+  if (!allocation)
+    return E_FAIL;
+  mtex->rename(std::move(allocation));
+
+  tag_texture_2d::DESC1 desc = {};
+  desc.Width = mtlInfo.width;
+  desc.Height = mtlInfo.height;
+  desc.MipLevels = mtlInfo.mipmap_level_count;
+  desc.ArraySize = mtlInfo.array_length;
+  switch (mtlInfo.pixel_format) {
+  case WMTPixelFormatBGRA8Unorm:
+    desc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
+    break;
+  case WMTPixelFormatBGRA8Unorm_sRGB:
+    desc.Format = DXGI_FORMAT_B8G8R8A8_UNORM_SRGB;
+    break;
+  case WMTPixelFormatRGBA8Unorm:
+    desc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+    break;
+  case WMTPixelFormatRGBA8Unorm_sRGB:
+    desc.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
+    break;
+  default:
+    desc.Format = DXGI_FORMAT_UNKNOWN;
+  }
+  desc.SampleDesc.Count = 1;
+  desc.SampleDesc.Quality = 0;
+  desc.Usage = D3D11_USAGE_DEFAULT;
+  desc.BindFlags = D3D11_BIND_RENDER_TARGET; // enough for OpenXR swapchain usecase
+  desc.CPUAccessFlags = 0;
+  desc.MiscFlags = 0;
+  desc.TextureLayout = D3D11_TEXTURE_LAYOUT_UNDEFINED;
+
+  Com<DeviceTexture<tag_texture_2d>> device_texture = ref(new DeviceTexture<tag_texture_2d>(&desc, Rc<Texture>(mtex), pDevice));
+  
+  return device_texture->QueryInterface(__uuidof(ID3D11Texture2D), (void**)ppTexture);
+}
+
 template <typename tag>
 HRESULT
 ImportSharedTextureInternal(

@@ -1118,3 +1118,11 @@ MTLSharedEvent_waitUntilSignaledValue(obj_handle_t event, uint64_t value, uint64
   UNIX_CALL(126, &params);
   return params.ret_timeout;
 }
+
+WINEMETAL_API void
+MTLTexture_getInfo(obj_handle_t texture, struct WMTTextureInfo *info) {
+  struct unixcall_generic_obj_ptr_noret params;
+  params.handle = texture;
+  params.arg.ptr = (void*)info;
+  UNIX_CALL(127, &params);
+}

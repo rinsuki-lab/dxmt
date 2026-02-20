@@ -209,6 +209,7 @@ public:
 
   Rc<TextureAllocation> allocate(Flags<TextureAllocationFlag> flags);
   Rc<TextureAllocation> import(mach_port_t mach_port);
+  Rc<TextureAllocation> import(WMT::Texture texture);
 
   TextureView &view(TextureViewKey key);
   TextureView &view(TextureViewKey key, TextureAllocation *allocation);

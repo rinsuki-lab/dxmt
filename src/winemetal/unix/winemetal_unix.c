@@ -2660,6 +2660,15 @@ _MTLSharedEvent_waitUntilSignaledValue(void *obj) {
   return STATUS_SUCCESS;
 }
 
+static NTSTATUS
+_MTLTexture_getInfo(void *obj) {
+  struct unixcall_generic_obj_ptr_noret *params = obj;
+  struct WMTTextureInfo *info = params->arg.ptr;
+  id<MTLTexture> texture = (id<MTLTexture>)params->handle;
+  extract_texture_descriptor(texture, info);
+  return STATUS_SUCCESS;
+}
+
 /*
  * Definition from cache.c
  */
@@ -2798,6 +2807,7 @@ const void *__wine_unix_call_funcs[] = {
     &_MTLDevice_newSharedEventWithMachPort,
     &_MTLDevice_registryID,
     &_MTLSharedEvent_waitUntilSignaledValue,
+    &_MTLTexture_getInfo,
 };
 
 #ifndef DXMT_NATIVE
@@ -2929,5 +2939,6 @@ const void *__wine_unix_call_wow64_funcs[] = {
     &_MTLDevice_newSharedEventWithMachPort,
     &_MTLDevice_registryID,
     &_MTLSharedEvent_waitUntilSignaledValue,
+    &_MTLTexture_getInfo,
 };
 #endif

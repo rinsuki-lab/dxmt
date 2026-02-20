@@ -1275,8 +1275,11 @@ public:
   }
 
   ID3D11Texture2D* STDMETHODCALLTYPE ImportMTLTexture(WMT::Texture texture) override {
-    // TODO
-    return nullptr;
+    ID3D11Texture2D* result = nullptr;
+    if (ImportMTLTexture2D(&d3d11_device_, texture, &result) != S_OK) {
+      return nullptr;
+    }
+    return result;
   }
 
 private:
