@@ -531,6 +531,9 @@ ImportMTLTexture2D(MTLD3D11Device *pDevice, WMT::Texture texture, ID3D11Texture2
   case WMTPixelFormatRGBA8Unorm_sRGB:
     desc.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
     break;
+  case WMTPixelFormatDepth32Float:
+    desc.Format = DXGI_FORMAT_D32_FLOAT;
+    break;
   default:
     desc.Format = DXGI_FORMAT_UNKNOWN;
   }
